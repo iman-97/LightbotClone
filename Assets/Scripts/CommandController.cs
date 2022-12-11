@@ -8,7 +8,7 @@ public class CommandController : MonoBehaviour
     [SerializeField]
     private byte _maxCapacity;
 
-    private List<Command> _commands;
+    private List<Command> _commands = new();
     private byte _index;
 
     public void AddCommand(Command command)
@@ -46,6 +46,19 @@ public class CommandController : MonoBehaviour
         _index++;
         //delay
         ExecuteCommands();
+    }
+
+    public Command ActiveCommand()
+    {
+        if (_index >= _commands.Count)
+        {
+            Debug.Log("End of Commands");
+            _index = 0;
+            return null;
+        }
+
+        _index++;
+        return _commands[_index - 1];
     }
 
     public void ClearCommands() => _commands.Clear();

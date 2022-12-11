@@ -10,157 +10,49 @@ namespace Managers
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField]
-        private int _maxMainCommands = 12, _maxProcCommands = 8;
+        private CommandController _mainCommandController, _procCommandController;
 
-        private byte _targetCount, _listId, _mainL, _procL;
+        private byte _targetCount, _listId;
+        private bool _isProc, _noDelay;
+        private CommandController _currentCommandController;
 
-        private List<Command> _mainCommands = new();
-        private List<Command> _procCommands = new();
+        private void Start()
+        {
+            _currentCommandController = _mainCommandController;
+        }
 
         public void AddCommandToActiveList(Command command, CommandListItem visual)
         {
             if (_listId == 0)
-                AddCommandToMain(command, visual);
+                UIManager.Instance.AddVisualToMain(command, visual);
             else
-                AddCommandToProc(command, visual);
+                UIManager.Instance.AddVisualToProc(command, visual);
+
+            _currentCommandController.AddCommand(command);
         }
 
         public void RemoveCommandFromActiveList(Command command)
         {
-            if (_listId == 0)
-                RemoveCommandFromMain(command);
-            else
-                RemoveCommandFromProc(command);
-        }
-
-        public void AddCommandToMain(Command command, CommandListItem visual)
-        {
-            if (_mainCommands.Count >= _maxMainCommands)
-            {
-                Debug.Log("Main command list is full");
-                return;
-            }
-            Debug.Log("Add command to main");
-            _mainCommands.Add(command);
-            UIManager.Instance.AddVisualToMain(command, visual);
-        }
-
-        public void RemoveCommandFromMain(Command command)
-        {
-            if (_mainCommands.Contains(command) == false)
-            {
-                Debug.Log("The following command is not awailabe in Main commands");
-                return;
-            }
-            Debug.Log("remove command from main");
-            _mainCommands.Remove(command);
-        }
-
-        public void AddCommandToProc(Command command, CommandListItem visual)
-        {
-            if (_procCommands.Count >= _maxProcCommands)
-            {
-                Debug.Log("Proc command list is full");
-                return;
-            }
-            Debug.Log("Add command to proc");
-            _procCommands.Add(command);
-            UIManager.Instance.AddVisualToProc(command, visual);
-        }
-
-        public void RemoveCommandFromProc(Command command)
-        {
-            if (_procCommands.Contains(command) == false)
-            {
-                Debug.Log("The following command is not awailabe in Proc commands");
-                return;
-            }
-            Debug.Log("remove command from proc");
-            _procCommands.Remove(command);
+            _currentCommandController.RemoveCommand(command);
         }
 
         public void CleanCommands()
         {
-            _mainCommands.Clear();
-            _procCommands.Clear();
+            _mainCommandController.ClearCommands();
+            _procCommandController.ClearCommands();
         }
 
         public void RunMainCommands()
         {
-            //OnPlayStarts?.Invoke();
-
-            //StartCoroutine(Run());
-
-            //IEnumerator Run()
-            //{
-            //    foreach (var command in _mainCommands)
-            //    {
-            //        command.Execute();
-            //        yield return new WaitForSeconds(.5f);
-            //    }
-
-            //    OnPLayEnds?.Invoke();
-            //}
-
-            Run();
-        }
-
-        public void Run()
-        {
-            if(_mainL >= _mainCommands.Count)
-            {
-                //main commands ends
-                Debug.Log("Main commands end");
-                _mainL = 0;
-                return;
-            }
-
-            _mainCommands[_mainL].Execute();
-            _mainL++;
-            //StartCoroutine(Delay());
-
-            //IEnumerator Delay()
-            //{
-            //    yield return new WaitForSeconds(.5f);
-                Run();
-            //}
-        }
-
-        public void RunProc()
-        {
-            if (_procL >= _procCommands.Count)
-            {
-                //proc commands ends
-                Debug.Log("Proc commands end");
-                _procL = 0;
-                return;
-            }
-
-            _procCommands[_procL].Execute();
-            _procL++;
-            //StartCoroutine(Delay());
-
-            //IEnumerator Delay()
-            //{
-            //    yield return new WaitForSeconds(.5f);
-                RunProc();
-            //}
+            _currentCommandController = _mainCommandController;
+            RunCommands();
         }
 
         public void RunProcCommands()
         {
-            //StartCoroutine(Run());
-
-            //IEnumerator Run()
-            //{
-            //    foreach (var command in _procCommands)
-            //    {
-            //        command.Execute();
-            //        yield return new WaitForSeconds(.5f);
-            //    }
-            //}
-
-            RunProc();
+            _currentCommandController = _procCommandController;
+            _isProc = true;
+            _noDelay = true;
         }
 
         public void SetTargetCount(byte count)
@@ -169,11 +61,15 @@ namespace Managers
             _targetCount = count;
         }
 
-        public void ActiveList(byte id) => _listId = id;
+        public void ActiveList(byte id)
+        {
+            _listId = id;
 
-        public void ActiveMainList() => _listId = 0;
-
-        public void ActiveProc() => _listId = 1;
+            if (id == 0)
+                _currentCommandController = _mainCommandController;
+            else
+                _currentCommandController = _procCommandController;
+        }
 
         public void CheckWin()
         {
@@ -184,6 +80,39 @@ namespace Managers
                 //win
                 Debug.Log("Win");
                 UIManager.Instance.ShowNextLevelButton();
+            }
+        }
+
+        private void RunCommands()
+        {
+            var com = _currentCommandController.ActiveCommand();
+
+            if(com == null)
+            {
+                if (_isProc == true)
+                {
+                    _currentCommandController = _mainCommandController;
+                    _isProc = false;
+                    RunCommands();
+                }
+
+                return;
+            }
+
+            com.Execute();
+            StartCoroutine(Delay());
+
+            IEnumerator Delay()
+            {
+                if (_noDelay == true)
+                {
+                    _noDelay = false;
+                    yield return null;
+                }
+                else
+                    yield return new WaitForSeconds(.5f);
+
+                RunCommands();
             }
         }
 
