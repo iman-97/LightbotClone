@@ -1,3 +1,4 @@
+using Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,8 @@ namespace UI
         private CanvasGroup _canvasGroup;
         [SerializeField]
         private Outline _outline;
+        [SerializeField]
+        private byte id;
 
         private bool _isActive;
 
@@ -21,6 +24,7 @@ namespace UI
             _outline.enabled = true;
             _canvasGroup.interactable = true;
             //set active list in game manager
+            GameManager.Instance.ActiveList(id);
         }
 
         public void UnSelect()

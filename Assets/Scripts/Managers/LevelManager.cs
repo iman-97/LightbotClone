@@ -29,10 +29,7 @@ namespace Managers
             _levelSelectScene.LoadSceneAsync(LoadSceneMode.Additive);
         }
 
-        public void UnloadLevelSelect()
-        {
-            _levelSelectScene.UnLoadScene();
-        }
+        public void UnloadLevelSelect() => _levelSelectScene.UnLoadScene();
 
         public void LoadLevel(int level)
         {
@@ -53,10 +50,12 @@ namespace Managers
             if (_currentLevelIndex == 10)
                 _currentLevelIndex = 1;
 
+            Addressables.UnloadSceneAsync(_currentLevel);
             Addressables.LoadSceneAsync($"Level {_currentLevelIndex}", LoadSceneMode.Additive).Completed += obj =>
             {
                 _currentLevel = obj.Result;
             };
         }
+
     }
 }

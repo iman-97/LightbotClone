@@ -92,7 +92,7 @@ public class Player : Singleton<Player>
 
     private bool CheckForward()
     {
-        Ray ray = new Ray(transform.position + new Vector3(0, 0.7f, 0), Vector3.right);
+        Ray ray = new Ray(transform.position + new Vector3(0, 0.7f, 0), transform.right);
         if (Physics.Raycast(ray, .5f, _PlateLayer) == false)
         {
             Debug.Log("there is no plate for jump");
@@ -104,7 +104,7 @@ public class Player : Singleton<Player>
 
     private bool CheckForDoublePLate()
     {
-        Ray ray = new Ray(transform.position + new Vector3(0, 1f, 0), Vector3.right);
+        Ray ray = new Ray(transform.position + new Vector3(0, 1f, 0), transform.right);
         if (Physics.Raycast(ray, .5f, _PlateLayer) == true)
         {
             Debug.Log("Its Too high cant jump");
@@ -116,7 +116,7 @@ public class Player : Singleton<Player>
 
     private bool CheckJumpDown()
     {
-        Ray ray = new Ray(transform.position - new Vector3(0, .5f, 0), Vector3.right);
+        Ray ray = new Ray(transform.position - new Vector3(0, .5f, 0), transform.right);
         if (Physics.SphereCast(ray, .2f) == false)
         {
             Debug.Log("cant jump down");
@@ -131,9 +131,9 @@ public class Player : Singleton<Player>
         Gizmos.color = Color.red;
         Ray ray = new Ray(transform.position+ new Vector3(0, .4f, 0) + transform.right, Vector3.down);
         Gizmos.DrawRay(ray);
-        ray = new Ray(transform.position + new Vector3(0, 0.7f, 0), Vector3.right);
+        ray = new Ray(transform.position + new Vector3(0, 0.7f, 0), transform.right);
         Gizmos.DrawRay(ray);
-        ray = new Ray(transform.position + new Vector3(0, 1f, 0), Vector3.right);
+        ray = new Ray(transform.position + new Vector3(0, 1f, 0), transform.right);
         Gizmos.DrawRay(ray);
         Gizmos.DrawSphere(transform.position - new Vector3(0, .5f, 0) + transform.right, .2f);
     }

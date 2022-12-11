@@ -11,29 +11,26 @@ namespace Managers
     {
         [SerializeField]
         private int _maxMainCommands = 12, _maxProcCommands = 8;
-        //[SerializeField]
-        //private PlayerBridgeSO _playerBridge;
-        //[SerializeField]
-        //private GameObject _player;
 
-        private byte _targetCount;
+        private byte _targetCount, _listId, _mainL, _procL;
 
         private List<Command> _mainCommands = new();
         private List<Command> _procCommands = new();
 
-        private void Start()
-        {
-            //_playerBridge.SetPlayer(_player);
-        }
-
         public void AddCommandToActiveList(Command command, CommandListItem visual)
         {
-            AddCommandToMain(command, visual);
+            if (_listId == 0)
+                AddCommandToMain(command, visual);
+            else
+                AddCommandToProc(command, visual);
         }
 
         public void RemoveCommandFromActiveList(Command command)
         {
-            RemoveCommandFromMain(command);
+            if (_listId == 0)
+                RemoveCommandFromMain(command);
+            else
+                RemoveCommandFromProc(command);
         }
 
         public void AddCommandToMain(Command command, CommandListItem visual)
@@ -59,15 +56,16 @@ namespace Managers
             _mainCommands.Remove(command);
         }
 
-        public void AddCommandToProc(Command command)
+        public void AddCommandToProc(Command command, CommandListItem visual)
         {
             if (_procCommands.Count >= _maxProcCommands)
             {
                 Debug.Log("Proc command list is full");
                 return;
             }
-
+            Debug.Log("Add command to proc");
             _procCommands.Add(command);
+            UIManager.Instance.AddVisualToProc(command, visual);
         }
 
         public void RemoveCommandFromProc(Command command)
@@ -77,40 +75,105 @@ namespace Managers
                 Debug.Log("The following command is not awailabe in Proc commands");
                 return;
             }
-
+            Debug.Log("remove command from proc");
             _procCommands.Remove(command);
+        }
+
+        public void CleanCommands()
+        {
+            _mainCommands.Clear();
+            _procCommands.Clear();
         }
 
         public void RunMainCommands()
         {
-            StartCoroutine(Run());
+            //OnPlayStarts?.Invoke();
 
-            IEnumerator Run()
+            //StartCoroutine(Run());
+
+            //IEnumerator Run()
+            //{
+            //    foreach (var command in _mainCommands)
+            //    {
+            //        command.Execute();
+            //        yield return new WaitForSeconds(.5f);
+            //    }
+
+            //    OnPLayEnds?.Invoke();
+            //}
+
+            Run();
+        }
+
+        public void Run()
+        {
+            if(_mainL >= _mainCommands.Count)
             {
-                foreach (var command in _mainCommands)
-                {
-                    command.Execute();
-                    yield return new WaitForSeconds(.5f);
-                }
+                //main commands ends
+                Debug.Log("Main commands end");
+                _mainL = 0;
+                return;
             }
 
+            _mainCommands[_mainL].Execute();
+            _mainL++;
+            //StartCoroutine(Delay());
+
+            //IEnumerator Delay()
+            //{
+            //    yield return new WaitForSeconds(.5f);
+                Run();
+            //}
+        }
+
+        public void RunProc()
+        {
+            if (_procL >= _procCommands.Count)
+            {
+                //proc commands ends
+                Debug.Log("Proc commands end");
+                _procL = 0;
+                return;
+            }
+
+            _procCommands[_procL].Execute();
+            _procL++;
+            //StartCoroutine(Delay());
+
+            //IEnumerator Delay()
+            //{
+            //    yield return new WaitForSeconds(.5f);
+                RunProc();
+            //}
         }
 
         public void RunProcCommands()
         {
-            StartCoroutine(Run());
+            //StartCoroutine(Run());
 
-            IEnumerator Run()
-            {
-                foreach (var command in _procCommands)
-                {
-                    command.Execute();
-                    yield return new WaitForSeconds(.5f);
-                }
-            }
+            //IEnumerator Run()
+            //{
+            //    foreach (var command in _procCommands)
+            //    {
+            //        command.Execute();
+            //        yield return new WaitForSeconds(.5f);
+            //    }
+            //}
+
+            RunProc();
         }
 
-        public void SetTargetCount(byte count) => _targetCount = count;
+        public void SetTargetCount(byte count)
+        {
+            CleanCommands();
+            _targetCount = count;
+        }
+
+        public void ActiveList(byte id) => _listId = id;
+
+        public void ActiveMainList() => _listId = 0;
+
+        public void ActiveProc() => _listId = 1;
 
         public void CheckWin()
         {
