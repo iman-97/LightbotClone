@@ -27,7 +27,7 @@ namespace UI
             _isActive = true;
             _outline.enabled = true;
             _canvasGroup.interactable = true;
-            GameManager.Instance.ActiveList(id);
+            GameManager.Instance.SetActiveList(id);
         }
 
         public void UnSelect()
@@ -49,9 +49,8 @@ namespace UI
         public void ClearVisuals()
         {
             for (int i = 0; i < _itemHolder.childCount; i++)
-            {
                 Destroy(_itemHolder.GetChild(i).gameObject);
-            }
+
         }
 
         public void BlockTouch()

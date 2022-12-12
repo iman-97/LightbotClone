@@ -1,30 +1,16 @@
-using Managers;
 using System.Collections;
 using UnityEngine;
 using Utilities;
 
 public class Player : Singleton<Player>
 {
-    [SerializeField]
-    private EventChannel _eventChannel;
-
     private Material _material;
-    private Vector3 _currentPosition;
-    private int _cuurentRotation;
 
-    private void Start()
-    {
-        _material = GetComponentInChildren<MeshRenderer>().material;
-        _eventChannel.OnRewind += SetupPlayer;
-    }
-
-    private void OnDestroy() => _eventChannel.OnRewind -= SetupPlayer;
+    private void Start() => _material = GetComponentInChildren<MeshRenderer>().material;
 
     public void Initialize(Vector3 position, int rotation)
     {
-        _currentPosition = position;
-        _cuurentRotation = rotation;
-        SetupPlayer();
+        transform.SetPositionAndRotation(position, Quaternion.Euler(0, rotation, 0));
     }
 
     public void MoveForward()
@@ -87,11 +73,10 @@ public class Player : Singleton<Player>
 
     public void LightOff() => _material.color = Color.green;
 
-    private void SetupPlayer()
-    {
-        transform.SetPositionAndRotation(_currentPosition, Quaternion.Euler(0, _cuurentRotation, 0));
-    }
-
+    /// <summary>
+    /// Checks for plate in ground level of player
+    /// </summary>
+    /// <returns>True if there is plate</returns>
     private bool CheckForwardDown()
     {
         Ray ray = new Ray(transform.position + new Vector3(0, .4f, 0) + transform.right, Vector3.down);
@@ -104,6 +89,10 @@ public class Player : Singleton<Player>
         return true;
     }
 
+    /// <summary>
+    /// Checks for plate in front of player
+    /// </summary>
+    /// <returns>True if there is plate</returns>
     private bool CheckForward()
     {
         Ray ray = new Ray(transform.position + new Vector3(0, 0.7f, 0), transform.right);
@@ -116,6 +105,10 @@ public class Player : Singleton<Player>
         return true;
     }
 
+    /// <summary>
+    /// Checks for double plate in front of player
+    /// </summary>
+    /// <returns>True if there is plate</returns>
     private bool CheckForDoublePLate()
     {
         Ray ray = new Ray(transform.position + new Vector3(0, 1f, 0), transform.right);
@@ -128,6 +121,10 @@ public class Player : Singleton<Player>
         return true;
     }
 
+    /// <summary>
+    /// Checks for plate under ground level of player
+    /// </summary>
+    /// <returns>True if there is plate</returns>
     private bool CheckJumpDown()
     {
         Ray ray = new Ray(transform.position - new Vector3(0, .5f, 0), transform.right);

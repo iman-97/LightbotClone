@@ -59,11 +59,15 @@ namespace Managers
 
         public void SetTargetCount(byte count)
         {
-            CleanCommands();
+            //CleanCommands();
             _targetCount = count;
         }
 
-        public void ActiveList(byte id)
+        /// <summary>
+        /// sets the active CommandController
+        /// </summary>
+        /// <param name="id">id of CommandController</param>
+        public void SetActiveList(byte id)
         {
             if (id == 0)
                 _currentCommandController = _mainCommandController;
@@ -71,18 +75,23 @@ namespace Managers
                 _currentCommandController = _procedureCommands[id - 1];
         }
 
+        /// <summary>
+        /// checks the win state
+        /// </summary>
         public void CheckWin()
         {
             _targetCount--;
 
             if(_targetCount == 0)
             {
-                //win
                 Debug.Log("Win");
                 UIManager.Instance.ShowNextLevelButton();
             }
         }
-
+        
+        /// <summary>
+        /// Execute commands available in command lists
+        /// </summary>
         private void RunCommands()
         {
             var com = _currentCommandController.ActiveCommand();

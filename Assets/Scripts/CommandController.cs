@@ -56,7 +56,11 @@ public class CommandController : MonoBehaviour
         _commands.Remove(command);
         Destroy(visual);
     }
-
+    
+    /// <summary>
+    /// Returns next command in the list
+    /// </summary>
+    /// <returns>Ready to execute command or null if list ends</returns>
     public Command ActiveCommand()
     {
         if (_index >= _commands.Count)
@@ -70,6 +74,9 @@ public class CommandController : MonoBehaviour
         return _commands[_index - 1];
     }
 
+    /// <summary>
+    /// Clears command from list and visual
+    /// </summary>
     public void ClearCommands()
     {
         _commands.Clear();

@@ -23,10 +23,16 @@ public class LevelInitializer : MonoBehaviour
             UIManager.Instance.HideProcedurePanel();
 
         InitializeLevel();
-       _eventChannel.OnReset += InitializeLevel;
+        GameManager.Instance.CleanCommands();
+        _eventChannel.OnReset += InitializeLevel;
+        _eventChannel.OnRewind += InitializeLevel;
     }
 
-    private void OnDestroy() => _eventChannel.OnReset -= InitializeLevel;
+    private void OnDestroy()
+    {
+        _eventChannel.OnReset -= InitializeLevel;
+        _eventChannel.OnRewind -= InitializeLevel;
+    }
 
     /// <summary>
     /// Setup player and game manager for this level

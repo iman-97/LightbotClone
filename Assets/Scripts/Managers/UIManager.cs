@@ -24,7 +24,11 @@ namespace Managers
 
         public void PlayButton() => GameManager.Instance.RunMainCommands();
 
-        public void ResetButton() => _eventChannel.ResetGame();
+        public void ResetButton()
+        {
+            _eventChannel.ResetGame();
+            DefaultSetup();
+        }
 
         public void RewindButton()
         {
