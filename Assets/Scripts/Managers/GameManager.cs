@@ -57,11 +57,7 @@ namespace Managers
             _noDelay = true;
         }
 
-        public void SetTargetCount(byte count)
-        {
-            //CleanCommands();
-            _targetCount = count;
-        }
+        public void SetTargetCount(byte count) => _targetCount = count;
 
         /// <summary>
         /// sets the active CommandController
