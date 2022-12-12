@@ -12,9 +12,16 @@ public class LevelInitializer : MonoBehaviour
     private Vector3 _playerInitialPosition;
     [SerializeField]
     private byte _targetInLevel;
+    [SerializeField]
+    private bool _hasProcedure;
 
     private void Start()
     {
+        if (_hasProcedure == true)
+            UIManager.Instance.ShowProcedurePanel();
+        else
+            UIManager.Instance.HideProcedurePanel();
+
         InitializeLevel();
        _eventChannel.OnReset += InitializeLevel;
     }

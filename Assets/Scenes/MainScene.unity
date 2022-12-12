@@ -782,6 +782,7 @@ MonoBehaviour:
   _nextLevelButton: {fileID: 1009414854}
   _playButton: {fileID: 1448893702}
   _rewindButton: {fileID: 886388591}
+  _procPanel: {fileID: 1879699826}
 --- !u!4 &466282401
 Transform:
   m_ObjectHideFlags: 0
@@ -904,7 +905,8 @@ MonoBehaviour:
   _persistent: 0
   _eventChannel: {fileID: 11400000, guid: c0a3e5cfaeca2024e92772d2b791c10a, type: 2}
   _mainCommandController: {fileID: 1049478714}
-  _procCommandController: {fileID: 288648787}
+  _procedureCommands:
+  - {fileID: 288648787}
 --- !u!4 &682443609
 Transform:
   m_ObjectHideFlags: 0

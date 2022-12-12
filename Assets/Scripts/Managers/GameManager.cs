@@ -11,7 +11,9 @@ namespace Managers
         [SerializeField]
         private EventChannel _eventChannel;
         [SerializeField]
-        private CommandController _mainCommandController, _procCommandController;
+        private CommandController _mainCommandController;
+        [SerializeField]
+        private CommandController[] _procedureCommands;
 
         private byte _targetCount;
         private bool _isProc, _noDelay;
@@ -27,7 +29,7 @@ namespace Managers
             _currentCommandController.AddCommand(command, visual);
         }
 
-        public void RemoveCommandFromActiveList(Command command,GameObject visual)
+        public void RemoveCommandFromActiveList(Command command, GameObject visual)
         {
             _currentCommandController.RemoveCommand(command, visual);
         }
@@ -35,7 +37,10 @@ namespace Managers
         public void CleanCommands()
         {
             _mainCommandController.ClearCommands();
-            _procCommandController.ClearCommands();
+
+            foreach (var controller in _procedureCommands)
+                controller.ClearCommands();
+
         }
 
         public void RunMainCommands()
@@ -45,9 +50,9 @@ namespace Managers
             RunCommands();
         }
 
-        public void RunProcCommands()
+        public void RunProcCommands(byte procNumber)
         {
-            _currentCommandController = _procCommandController;
+            _currentCommandController = _procedureCommands[procNumber];
             _isProc = true;
             _noDelay = true;
         }
@@ -63,7 +68,7 @@ namespace Managers
             if (id == 0)
                 _currentCommandController = _mainCommandController;
             else
-                _currentCommandController = _procCommandController;
+                _currentCommandController = _procedureCommands[id - 1];
         }
 
         public void CheckWin()

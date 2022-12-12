@@ -8,7 +8,7 @@ namespace Managers
         [SerializeField]
         private EventChannel _eventChannel;
         [SerializeField]
-        private GameObject _nextLevelButton, _playButton, _rewindButton;
+        private GameObject _nextLevelButton, _playButton, _rewindButton, _procPanel;
 
         private void Start()
         {
@@ -43,6 +43,10 @@ namespace Managers
         public void ShowNextLevelButton() => _nextLevelButton.SetActive(true);
 
         public void HideNextLevelButton() => _nextLevelButton.SetActive(false);
+
+        public void ShowProcedurePanel() => _procPanel.SetActive(true);
+
+        public void HideProcedurePanel() => _procPanel.SetActive(false);
 
         private void OnPlayEnd() => _rewindButton.SetActive(true);
 

@@ -1,9 +1,13 @@
 using Commands;
+using UnityEngine;
 
 namespace UI.Buttons
 {
     public class ProcCommandButton : CommandButton
     {
-        private void Start() => command = new ProcedureCommand();
+        [SerializeField]
+        private byte _procNumber;
+
+        private void Start() => command = new ProcedureCommand(_procNumber);
     }
 }

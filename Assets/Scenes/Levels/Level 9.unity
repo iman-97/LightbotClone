@@ -794,6 +794,7 @@ MonoBehaviour:
   _playerInitialRotaion: 270
   _playerInitialPosition: {x: 0, y: 0, z: 0}
   _targetInLevel: 3
+  _hasProcedure: 1
 --- !u!4 &961318877
 Transform:
   m_ObjectHideFlags: 0

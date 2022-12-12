@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   listVisual: {fileID: 3225848155659319144, guid: 15978393713d1b84698494d2540d34fb, type: 3}
+  _procNumber: 0
 --- !u!1 &8330923156467426166
 GameObject:
   m_ObjectHideFlags: 0
