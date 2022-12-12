@@ -23,7 +23,6 @@ namespace UI
             _isActive = true;
             _outline.enabled = true;
             _canvasGroup.interactable = true;
-            //set active list in game manager
             GameManager.Instance.ActiveList(id);
         }
 
