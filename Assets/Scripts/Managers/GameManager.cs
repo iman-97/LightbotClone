@@ -9,9 +9,11 @@ namespace Managers
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField]
+        private EventChannel _eventChannel;
+        [SerializeField]
         private CommandController _mainCommandController, _procCommandController;
 
-        private byte _targetCount, _listId;
+        private byte _targetCount;
         private bool _isProc, _noDelay;
         private CommandController _currentCommandController;
 
@@ -22,17 +24,12 @@ namespace Managers
 
         public void AddCommandToActiveList(Command command, CommandListItem visual)
         {
-            if (_listId == 0)
-                UIManager.Instance.AddVisualToMain(command, visual);
-            else
-                UIManager.Instance.AddVisualToProc(command, visual);
-
-            _currentCommandController.AddCommand(command);
+            _currentCommandController.AddCommand(command, visual);
         }
 
-        public void RemoveCommandFromActiveList(Command command)
+        public void RemoveCommandFromActiveList(Command command,GameObject visual)
         {
-            _currentCommandController.RemoveCommand(command);
+            _currentCommandController.RemoveCommand(command, visual);
         }
 
         public void CleanCommands()
@@ -44,6 +41,7 @@ namespace Managers
         public void RunMainCommands()
         {
             _currentCommandController = _mainCommandController;
+            _eventChannel.PlayStartEvent();
             RunCommands();
         }
 
@@ -62,8 +60,6 @@ namespace Managers
 
         public void ActiveList(byte id)
         {
-            _listId = id;
-
             if (id == 0)
                 _currentCommandController = _mainCommandController;
             else
@@ -93,9 +89,14 @@ namespace Managers
                     _currentCommandController = _mainCommandController;
                     _isProc = false;
                     RunCommands();
+                    return;
                 }
-
-                return;
+                else
+                {
+                    //end of main commands
+                    _eventChannel.PlayEndEvent();
+                    return;
+                }
             }
 
             com.Execute();

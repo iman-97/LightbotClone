@@ -133,6 +133,8 @@ GameObject:
   m_Component:
   - component: {fileID: 160400756}
   - component: {fileID: 160400757}
+  - component: {fileID: 160400759}
+  - component: {fileID: 160400758}
   m_Layer: 5
   m_Name: CommandHolder
   m_TagString: Untagged
@@ -186,6 +188,32 @@ MonoBehaviour:
   m_Spacing: {x: 30, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!114 &160400758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 160400755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e9c61fe4254ffb49a40e8c82b9a8cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _eventChannel: {fileID: 11400000, guid: c0a3e5cfaeca2024e92772d2b791c10a, type: 2}
+  _canvasGroup: {fileID: 160400759}
+--- !u!225 &160400759
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 160400755}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &532347933
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -6,15 +6,25 @@ using Utilities;
 public class Player : Singleton<Player>
 {
     [SerializeField]
-    private LayerMask _PlateLayer;
+    private EventChannel _eventChannel;
 
     private Material _material;
+    private Vector3 _currentPosition;
+    private int _cuurentRotation;
 
-    private void Start() => _material = GetComponentInChildren<MeshRenderer>().material;
+    private void Start()
+    {
+        _material = GetComponentInChildren<MeshRenderer>().material;
+        _eventChannel.OnRewind += SetupPlayer;
+    }
+
+    private void OnDestroy() => _eventChannel.OnRewind -= SetupPlayer;
 
     public void Initialize(Vector3 position, int rotation)
     {
-        transform.SetPositionAndRotation(position, Quaternion.Euler(0, rotation, 0));
+        _currentPosition = position;
+        _cuurentRotation = rotation;
+        SetupPlayer();
     }
 
     public void MoveForward()
@@ -53,9 +63,9 @@ public class Player : Singleton<Player>
 
     public void LightOn()
     {
-        Ray ray = new Ray(transform.position+new Vector3(0,.5f,0), Vector3.down);
+        Ray ray = new Ray(transform.position + new Vector3(0, .5f, 0), Vector3.down);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 0.25f, _PlateLayer))
+        if (Physics.Raycast(ray, out hit, 0.25f))
         {
             if (hit.transform.CompareTag("Target") == false)
                 Debug.Log("This plate is not target");
@@ -76,6 +86,11 @@ public class Player : Singleton<Player>
     }
 
     public void LightOff() => _material.color = Color.green;
+
+    private void SetupPlayer()
+    {
+        transform.SetPositionAndRotation(_currentPosition, Quaternion.Euler(0, _cuurentRotation, 0));
+    }
 
     private bool CheckForwardDown()
     {

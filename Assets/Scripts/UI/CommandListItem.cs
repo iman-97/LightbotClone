@@ -12,8 +12,7 @@ namespace UI
 
         public void RemoveFromList()
         {
-            GameManager.Instance.RemoveCommandFromActiveList(_command);
-            Destroy(gameObject);
+            GameManager.Instance.RemoveCommandFromActiveList(_command, gameObject);
         }
 
     }

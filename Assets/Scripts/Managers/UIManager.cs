@@ -1,5 +1,3 @@
-using Commands;
-using UI;
 using UnityEngine;
 using Utilities;
 
@@ -10,52 +8,51 @@ namespace Managers
         [SerializeField]
         private EventChannel _eventChannel;
         [SerializeField]
-        private Transform _mainListHolder, _procListHolder;
-        [SerializeField]
-        private GameObject _nextLevelButton;
+        private GameObject _nextLevelButton, _playButton, _rewindButton;
 
-        private void Start() => _eventChannel.OnReset += CleanUp;
+        private void Start()
+        {
+            _eventChannel.OnPlayStart += OnPlayStart;
+            _eventChannel.OnPlayEnd += OnPlayEnd;
+        }
 
-        private void OnDestroy() => _eventChannel.OnReset -= CleanUp;
+        private void OnDestroy()
+        {
+            _eventChannel.OnPlayStart -= OnPlayStart;
+            _eventChannel.OnPlayEnd -= OnPlayEnd;
+        }
 
         public void PlayButton() => GameManager.Instance.RunMainCommands();
 
-        public void ResetButton() => _eventChannel.OnResetGame();
+        public void ResetButton() => _eventChannel.ResetGame();
+
+        public void RewindButton()
+        {
+            _eventChannel.RewindEvent();
+            DefaultSetup();
+        }
 
         public void BackToLevelSelectButton() => LevelManager.Instance.LoadLevelSelect();
 
         public void NextLevelButton()
         {
-            HideNextLevelButton();
-            CleanUp();
+            DefaultSetup();
             LevelManager.Instance.LoadNextLevel();
-        }
-
-        public void AddVisualToMain(Command command, CommandListItem visual)
-        {
-            Instantiate(visual, _mainListHolder).Initialize(command);
-        }
-
-        public void AddVisualToProc(Command command, CommandListItem visual)
-        {
-            Instantiate(visual, _procListHolder).Initialize(command);
         }
 
         public void ShowNextLevelButton() => _nextLevelButton.SetActive(true);
 
         public void HideNextLevelButton() => _nextLevelButton.SetActive(false);
 
-        private void CleanUp()
-        {
-            for (int i = 0; i < _mainListHolder.childCount; i++)
-            {
-                Destroy(_mainListHolder.GetChild(i).gameObject);
-            }
+        private void OnPlayEnd() => _rewindButton.SetActive(true);
 
-            for (int i = 0; i < _procListHolder.childCount; i++)
-            {
-                Destroy(_procListHolder.GetChild(i).gameObject);
-            }
+        private void OnPlayStart() => _playButton.SetActive(false);
+
+        private void DefaultSetup()
+        {
+            HideNextLevelButton();
+            _rewindButton.SetActive(false);
+            _playButton.SetActive(true);
         }
 
     }
